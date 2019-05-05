@@ -1,0 +1,66 @@
+    buildscript {
+    ext.kotlin_version = '1.3.30'
+    repositories { jcenter() }
+
+    dependencies {
+        classpath "org.jetbrains.kotlin:kotlin-gradle-plugin:$kotlin_version"
+    }
+}
+
+apply plugin: 'kotlin-multiplatform'
+
+repositories {
+    mavenLocal()
+    mavenCentral()
+    jcenter()
+}
+
+kotlin {
+
+    sourceSets {
+        commonMain {
+            dependencies {
+                implementation kotlin('stdlib-common')
+            }
+        }
+        commonTest {
+            dependencies {
+                implementation kotlin('test-common')
+                implementation kotlin('test-annotations-common')
+            }
+        }
+    }
+
+    linuxX64() {
+
+        compilations.main.cinterops {
+            mylaps {
+                includeDirs("sdk-master/include")
+            }
+        }
+
+        binaries {
+            executable {
+                baseName = 'x2'
+                linkerOpts = ["-L${projectDir.path}/sdk-master/lib/linux/x86-64", '-lmylapssdk']
+                println("Executable path: ${outputFile.absolutePath}")
+            }
+        }
+    }
+
+    mingwX64("windowsX64") {
+        compilations.main.cinterops {
+            mylaps {
+                includeDirs("sdk-master/include")
+            }
+        }
+
+        binaries {
+            executable {
+                baseName = 'x2'
+                linkerOpts = ["-L${projectDir.path}/sdk-master/lib/windows/x64", '-lMylapsSDK']
+                println("Executable path: ${outputFile.absolutePath}")
+            }
+        }
+    }
+}

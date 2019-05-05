@@ -1,0 +1,28 @@
+compile-sdk-samples:
+  build: .
+  dockerfile: Dockerfile-sdk
+  volumes:
+    - ./sdk-master:/opt/sdk-master
+  working_dir: /opt/sdk-master
+  command: sh -c "cmake . && make"
+
+app-build:
+  image: openjdk:8-slim
+  working_dir: /opt/prj
+  volumes:
+    - ./root:/root
+    - .:/opt/prj
+  command: ./gradlew build
+
+x2:
+  image: debian:stretch-slim
+  working_dir: /opt/
+  environment:
+    - LD_LIBRARY_PATH=/opt/libs
+  devices:
+    - "/dev/mem:/dev/mem"
+  privileged: true
+  volumes:
+    - ./sdk-master/lib/linux/x86-64/libmylapssdk.so:/opt/libs/libmylapssdk.so
+    - ./build/bin/linuxX64/debugExecutable:/opt/x2
+  entrypoint: /opt/x2/x2.kexe

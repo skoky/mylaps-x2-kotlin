@@ -1,0 +1,10 @@
+package mylaps
+headers=MylapsSDK.h
+
+---
+
+bool availableappliance_is_compatible(const availableappliance_t* p)      {return MDP_BIT_ISSET(p->flags, aafIsCompatible);}
+
+bool passingtrigger_is_resend(const passingtrigger_t* const p)					{return MDP_BIT_ISSET(p->flags, pbResend);}
+
+#define MDP_BIT_ISSET(bitset, bit)				(((bitset) & (1<<(bit))) != 0)			//!< A macro that returns if a bit is set in a variable.
