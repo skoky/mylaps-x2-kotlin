@@ -1,21 +1,31 @@
 import kotlinx.cinterop.*
 import mylaps.*
 import platform.posix.*
+import zmq.ZMQ_PUB
+import zmq.ZMQ_REP
+import zmq.zmq_bind
+import zmq.zmq_socket
 import kotlin.system.exitProcess
 
 data class X2Context(val sdkHandle: mdp_sdk_handle_t, val mtaHandle: mta_handle_t, val eventHandle: mta_eventdata_handle_t)
+data class ZMQContext(val zmqContext: COpaquePointer, val publisher: COpaquePointer)
+
+const val ZMQ_PUBLISHER_PORT = 5556
 
 @ExperimentalUnsignedTypes
+@kotlinx.serialization.UnstableDefault
 fun main(args: Array<String>) {
 
     signal(SIGKILL, staticCFunction(::localExit))
     signal(SIGINT, staticCFunction(::localExit))
     signal(SIGQUIT, staticCFunction(::localExit))
 
-
     val params = parseArgs(args) ?: exitProcess(1)
 
-    val x2Context = initSdk()
+
+    val zmqContext = initZmq(ZMQ_PUBLISHER_PORT)
+
+    val x2Context = initSdk(zmqContext.publisher)
 
     verifyAppliance(x2Context, params.hostname)
 
@@ -39,6 +49,20 @@ fun main(args: Array<String>) {
         }
     }
     disconnectAppliance(x2Context)
+}
+
+
+
+fun initZmq(publisherPort: Int): ZMQContext {
+    val zmqContext = zmq.zmq_ctx_new() ?: throw IllegalStateException("Unable to connect to ZMQ")
+
+
+    val publisher = zmq_socket(zmqContext, ZMQ_PUB) ?: throw IllegalStateException("Unable to open publisher")
+    val rc = zmq_bind(publisher, "tcp://*:$publisherPort")
+    if (rc != 0) throw IllegalStateException("Unable to listen on port $publisherPort")
+
+    println("ZMQ bound to publisher: $publisherPort")
+    return ZMQContext(zmqContext, publisher)
 }
 
 fun localExit(signal: Int) {

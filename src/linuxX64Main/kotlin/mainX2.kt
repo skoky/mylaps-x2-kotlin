@@ -1,21 +1,21 @@
 import kotlinx.cinterop.*
+import kotlinx.serialization.json.Json
 import mylaps.*
-import platform.posix.NULL
 import platform.posix.size_t
 import platform.posix.uint32_t
 
-fun initSdk(): X2Context {
+fun initSdk(publisher: COpaquePointer): X2Context {
 
     // connecting
-    val sdkHandle: mdp_sdk_handle_t = mdp_sdk_alloc("x2Sample", NULL)
+    val sdkHandle: mdp_sdk_handle_t = mdp_sdk_alloc("x2Sample", publisher)
             ?: throw IllegalStateException("ERROR: SDK handle not allocated")
     println("SDK handle initialized")
 
-    val mtaHandle = mta_handle_alloc(sdkHandle, NULL)
+    val mtaHandle = mta_handle_alloc(sdkHandle, publisher)
             ?: throw IllegalStateException("Unable to allocate MTA Handle")
     println("MTA Handle initialized")
 
-    val eventHandle = mta_eventdata_handle_alloc_live_with_resend(mtaHandle, 0, NULL)
+    val eventHandle = mta_eventdata_handle_alloc_live_with_resend(mtaHandle, 0, publisher)
             ?: throw IllegalStateException("Failed to get the necessary handles to the event")
     println("Event handle initialized")
 
@@ -61,7 +61,7 @@ fun passingsTrigger(x2: X2Context) {
         println("[$type] Passing trigger $count")
         for (i in 0 until count.toInt()) {
             val passingTriggerOpt = passingTriggers?.get(i)
-            passingTriggerOpt?.let {passingTrigger ->
+            passingTriggerOpt?.let { passingTrigger ->
 
                 val trigger: passingtrigger_t = passingTrigger.pointed
                 val transponderLabel = mta_transponder_find(appHandle, trigger.transponderid)?.pointed?.label?.toKString()
@@ -86,9 +86,13 @@ fun passingsTrigger(x2: X2Context) {
 }
 
 @ExperimentalUnsignedTypes
+@kotlinx.serialization.UnstableDefault
 fun showPassings(x2: X2Context) {
 
-    val passingHandler: pfNotifyPassing = staticCFunction { handle: mta_eventdata_handle_t?, type: MDP_NOTIFY_TYPE, passings: CPointer<CPointerVar<passing_t>>?, count: uint32_t, _ ->
+    val passingHandler: pfNotifyPassing = staticCFunction { handle: mta_eventdata_handle_t?, type: MDP_NOTIFY_TYPE, passings: CPointer<CPointerVar<passing_t>>?, count: uint32_t, context: COpaquePointer? ->
+
+        val bs = 1024.convert<size_t>()
+        val b = nativeHeap.allocArray<ByteVar>(bs.toInt())
 
         val appHandle = mta_eventdata_get_appliance_handle(handle)
 
@@ -98,7 +102,17 @@ fun showPassings(x2: X2Context) {
             passingOptP?.let { passingP ->
                 val passing = passingP.pointed
                 val transponderLabel = mta_transponder_find(appHandle, passing.transponderid)?.pointed?.label?.toKString()
+                        ?: ""
                 println("[$type] Transponder ${passing.id} -> $transponderLabel")
+
+                val p = PassingMsg(
+                        passingId = passing.id.toInt(),
+                        transponderId = passing.transponderid.toString(),
+                        transponder = transponderLabel,
+                        utcTime = mdp_get_time_as_string(b, bs, passing.utctime, false, 4)?.toKString() ?: "",
+                        localTime = mdp_get_time_as_string(b, bs, passing.timeofday, false, 4)?.toKString() ?: "")
+                val str = Json.stringify(PassingMsg.serializer(), p)
+                sendJsonToZMQ(context, str)
             }
         }
     }
@@ -169,4 +183,11 @@ fun verifyAppliance(x2: X2Context, hostName: String) {
     }
     mdp_sdk_notify_verify_appliance(x2.sdkHandle, notifyHandler)
     mdp_sdk_appliance_verify(x2.sdkHandle, hostName)
+}
+
+fun sendJsonToZMQ(zmqContext: COpaquePointer?, jsonString: String) {
+    zmqContext?.let { context ->
+        val sent = zmq.zmq_send(context, jsonString.cstr, jsonString.length.toULong(), 0)
+        if (sent <= 0) println("ERROR: Unable to sent to ZMQ ${zmq.zmq_errno()}")
+    }
 }
