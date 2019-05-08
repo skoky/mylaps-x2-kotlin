@@ -87,11 +87,15 @@ working with MyLaps X2 SDK in Kotlin.
 
 Thank you MyLaps for supporting this project!
 
+# ZeroMQ usage
+
+Usage of ZeroMQ demonstrates how MyLaps SDK passes context to custom handlers. The context is ZeroMQ connection/context used 
+in handler to send `Passing` JSON to the ZMQ publisher queue.
+
 # Future work TBD
 
 - covering more events from X2 appliance, like manual event, resend example, time sync etc
 - more code sharing between Windows and Linux
-- output sent to ZMQ
 
 # Known issues
 
