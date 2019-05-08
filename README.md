@@ -90,6 +90,7 @@ Thank you MyLaps for supporting this project!
 
 # ZeroMQ usage
 
+*Linux X64 only*
 Usage of ZeroMQ demonstrates how MyLaps SDK passes context to custom handlers. The context is ZeroMQ connection/context used 
 in handler to send `Passing` JSON to the ZMQ publisher queue. To listen on ZeroMQ messages, use a simple client `zmq/sub.py`
 
