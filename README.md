@@ -21,6 +21,7 @@ Anyway, this example app support the 64 bit platform as this is commonly used to
 
 - Contact [MyLaps](https://www.mylaps.com/x2-timing-data-system/x2-sdk) to download X2 SDK. Copy it to the root directory `sdk-master`, version min 4.1+
 - Java/JDK 64 must be installed and present on PATH or JAVA_HOME
+- install [ZeroMQ](http://zeromq.org/) to demonstrate SDK context handling 
 - make sure you have X2 appliance available on network, have it hostname, username and password
 - if dockerized version required, install Docker and Docker-compose
 
