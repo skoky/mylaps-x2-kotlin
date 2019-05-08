@@ -41,7 +41,9 @@ The gradle build will download gradle building tool and all related dependencies
     
 Compiling example project using gradle:
     
-    gradlew.bat build
+    gradlew.bat compileKotlinWindowsX64 linkDebugExecutableWindowsX64
+
+*Note: the `build` task can't be used as it tries to build Linux target as well and does not have dependencies to or ZMQ `zmq.h`
 
 ## On Mac OSX X64
 
