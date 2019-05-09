@@ -60,7 +60,8 @@ fun passingsTrigger(x2: X2Context) {
 
         println("[$type] Passing trigger $count")
         for (i in 0 until count.toInt()) {
-              passingTriggers?.let { passingTrigger ->
+            val passingTriggerOpt = passingTriggers?.get(i)
+            passingTriggerOpt?.let { passingTrigger ->
                 val trigger: passingtrigger_t = passingTrigger.pointed
                 val transponderLabel = mta_transponder_find(appHandle, trigger.transponderid)?.pointed?.label?.toKString()
 
@@ -92,9 +93,9 @@ fun showPassings(x2: X2Context) {
 
         println("Passings found last $count")
         for (i in 0 until count.toInt()) {
-            if (passings!=null) {
-                val passingOptP = passings?.get(i)
-                val passing = passingOptP.pointed
+            val passingOptP = passings?.get(i)
+            passingOptP?.let { passingP ->
+                val passing = passingP.pointed
                 val transponderLabel = mta_transponder_find(appHandle, passing.transponderid)?.pointed?.label?.toKString()
                 println("[$type] Transponder ${passing.id} -> $transponderLabel")
             }
