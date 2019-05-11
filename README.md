@@ -21,7 +21,7 @@ Anyway, this example app support the 64 bit platform as this is commonly used to
 
 - Contact [MyLaps](https://www.mylaps.com/x2-timing-data-system/x2-sdk) to download X2 SDK. Copy it to the root directory `sdk-master`, version min 4.1+
 - Java/JDK 64 must be installed and present on PATH or JAVA_HOME
-- install [ZeroMQ](http://zeromq.org/) to demonstrate SDK context handling 
+- install [ZeroMQ](http://zeromq.org/) to demonstrate SDK context handling (Linux only)
 - make sure you have X2 appliance available on network, have it hostname, username and password
 - if dockerized version required, install Docker and Docker-compose
 
@@ -43,7 +43,7 @@ Compiling example project using gradle:
     
     gradlew.bat compileKotlinWindowsX64 linkDebugExecutableWindowsX64
 
-*Note: the `build` task can't be used as it tries to build Linux target as well and does not have dependencies to or ZMQ `zmq.h`
+*Note: the `build` task can't be used as it tries to build Linux target as well and does not have dependencies to ZMQ's `zmq.h`
 
 ## On Mac OSX X64
 
@@ -58,12 +58,6 @@ Examples delivered with MyLaps SDK can be compiles using make. Because of depend
 docker container on any platform like this:
 
     docker-compose run compile-sdk-samples
-
-
-## An additional note to multi-platform compilation
-
-Gradle can build the app for LinuxX64 on Mac and Windows platforms. Unfortunately it does not run on there and must 
-be copied to a Linux box for testing. 
 
 # Running example app on Linux
 
@@ -92,7 +86,7 @@ Thank you MyLaps for supporting this project!
 
 # ZeroMQ usage
 
-*Linux X64 only*
+*Linux X64 only:*
 Usage of ZeroMQ demonstrates how MyLaps SDK passes context to custom handlers. The context is ZeroMQ connection/context used 
 in handler to send `Passing` JSON to the ZMQ publisher queue. To listen on ZeroMQ messages, use a simple client `zmq/sub.py`
 
@@ -100,6 +94,7 @@ in handler to send `Passing` JSON to the ZMQ publisher queue. To listen on ZeroM
 
 - covering more events from X2 appliance, like manual event, resend example, time sync etc
 - more code sharing between Windows and Linux
+- unit testing, if multiplatform plugin will support it
 
 # Known issues
 
