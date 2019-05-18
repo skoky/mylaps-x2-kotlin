@@ -76,7 +76,7 @@ fun passingsTrigger(x2: X2Context) {
                 val isResend = passingtrigger_is_resend(passingTriggerOpt)
 
                 println("[$type] Passing trigger type $triggerType id: ${trigger.id} LoopId: ${trigger.loopid} Transponder: $transponderLabel " +
-                        "TimeUTC $timeUtc Time: $time isResend: $isResend")
+                        "TimeUTC ${timeUtc?.toKString()} Time: ${time?.toKString()} isResend: $isResend")
             }
         }
     }

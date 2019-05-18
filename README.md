@@ -76,6 +76,18 @@ Copy all files from `sdk-master/lib/windows/x64` into the same directory where `
 
     docker-compose run x2 <x2hostname> <username> <password>
 
+# Example output on console
+
+Passing example output on console
+
+    [MDP_NOTIFY_INSERT] Transponder 5530258 -> 69
+    [MDP_NOTIFY_INSERT] Transponder 5530259 -> 66
+    [MDP_NOTIFY_INSERT] Passing trigger 1
+    [MDP_NOTIFY_INSERT] Passing trigger type FirstContact id: 9812391 LoopId: 39 Transponder: 99_M TimeUTC 9:36:23.0213 Time: 9:36:23.0213 isResend: false
+    [MDP_NOTIFY_INSERT] Passing trigger 1
+    [MDP_NOTIFY_INSERT] Passing trigger type FirstContact id: 9812392 LoopId: 89 Transponder: 66_M TimeUTC 9:36:22.9320 Time: 9:36:22.9320 isResend: false
+
+
 # Intellij IDEA support
 
 If running Intellij Idea on Linux or Windows, it understands the Kotlin multi-platform project and its libraries (klib). 
@@ -91,6 +103,10 @@ Thank you MyLaps for supporting this project!
 *Linux X64 only:*
 Usage of ZeroMQ demonstrates how MyLaps SDK passes context to custom handlers. The context is ZeroMQ connection/context used 
 in handler to send `Passing` JSON to the ZMQ publisher queue. To listen on ZeroMQ messages, use a simple client `zmq/sub.py`
+
+An example message in ZMQ:
+
+    {u'transponderId': u'5781475', u'utcTime': u'7:39:20.6878', u'localTime': u'9:39:20.6878', u'transponder': u'54_M', u'passingId': 5531526}
 
 # Future work TBD
 
