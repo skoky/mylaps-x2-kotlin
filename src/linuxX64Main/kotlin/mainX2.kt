@@ -120,6 +120,7 @@ fun showPassings(x2: X2Context) {
     mta_eventdata_subscribe(x2.eventHandle, MTAEVENTDATA_.mtaPassing, 100, false)
 }
 
+@ExperimentalUnsignedTypes
 fun showLoops(x2: X2Context) {
 
     val loopCallback: pfNotifyLoop = staticCFunction { _, type: MDP_NOTIFY_TYPE, loops: CPointer<CPointerVar<loop_t>>?, count: uint32_t, _ ->
@@ -185,6 +186,7 @@ fun verifyAppliance(x2: X2Context, hostName: String) {
     mdp_sdk_appliance_verify(x2.sdkHandle, hostName)
 }
 
+@ExperimentalUnsignedTypes
 fun sendJsonToZMQ(zmqContext: COpaquePointer?, jsonString: String) {
     zmqContext?.let { context ->
         val sent = zmq.zmq_send(context, jsonString.cstr, jsonString.length.toULong(), 0)

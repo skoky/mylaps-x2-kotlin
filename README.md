@@ -26,7 +26,7 @@ Anyway, this example app support the 64 bit platform as this is commonly used to
 
 - Contact [MyLaps](https://www.mylaps.com/x2-timing-data-system/x2-sdk) to download X2 SDK. Copy it to the root directory `sdk-master`, version min 4.1+
 - Java/JDK 64 must be installed and present on PATH or JAVA_HOME
-- install [ZeroMQ](http://zeromq.org/) to demonstrate SDK context handling (Linux only)
+- the [ZeroMQ](http://zeromq.org/) is not necessary as binaries are part of the repo in `zmq/linux|windows`
 - make sure you have X2 appliance available on network, have it hostname, username and password
 - if dockerized version required, install Docker and Docker-compose
 
@@ -46,9 +46,9 @@ The gradle build will download gradle building tool and all related dependencies
     
 Compiling example project using gradle:
     
-    gradlew.bat compileKotlinWindowsX64 linkDebugExecutableWindowsX64
+    gradlew.bat build
 
-*Note: the `build` task can't be used as it tries to build Linux target as well and does not have dependencies to ZMQ's `zmq.h`
+*Note: the `build` task will build Windows and Linux binaries
 
 ## On Mac OSX X64
 
@@ -57,21 +57,14 @@ See all details inside the `docker-compose.yml`:
 
     docker-compose run app-build
 
-## (Optional) Compiling MyLaps SDK samples
-
-Examples delivered with MyLaps SDK can be compiles using make. Because of dependencies, it's easier to run it inside
-docker container on any platform like this:
-
-    docker-compose run compile-sdk-samples
-
 # Running example app on Linux
 
-    export LD_LIBRARY_PATH=sdk-master/lib/linux/x86-64
+    export LD_LIBRARY_PATH=sdk-master/lib/linux/x86-64:zmq/linux
     ./build/bin/linuxX64/debugExecutable/x2.kexe <hostname> <username> <password>
 
 # Running example app on Windows
 
-Copy all files from `sdk-master/lib/windows/x64` into the same directory where `x2.exe` is located.
+Copy all files from `sdk-master/lib/windows/x64` and `zmq/windows` into the same directory where `x2.exe` is located and run:
 
     ./build/bin/mingwX64/debugExecutable/x2.exe <hostname> <username> <password>
 
@@ -90,7 +83,6 @@ Passing example output on console
     [MDP_NOTIFY_INSERT] Passing trigger 1
     [MDP_NOTIFY_INSERT] Passing trigger type FirstContact id: 9812392 LoopId: 89 Transponder: 66_M TimeUTC 9:36:22.9320 Time: 9:36:22.9320 isResend: false
 
-
 # Intellij IDEA support
 
 If running Intellij Idea on Linux or Windows, it understands the Kotlin multi-platform project and its libraries (klib). 
@@ -103,7 +95,6 @@ Thank you MyLaps for supporting this project!
 
 # ZeroMQ usage
 
-*Linux X64 only:*
 Usage of ZeroMQ demonstrates how MyLaps SDK passes context to custom handlers. The context is ZeroMQ connection/context used 
 in handler to send `Passing` JSON to the ZMQ publisher queue. To listen on ZeroMQ messages, use a simple client `zmq/sub.py`
 

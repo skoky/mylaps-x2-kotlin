@@ -1,8 +1,8 @@
-import kotlinx.cinterop.*
+import kotlinx.cinterop.COpaquePointer
+import kotlinx.cinterop.staticCFunction
 import mylaps.*
 import platform.posix.*
 import zmq.ZMQ_PUB
-import zmq.ZMQ_REP
 import zmq.zmq_bind
 import zmq.zmq_socket
 import kotlin.system.exitProcess
@@ -56,10 +56,9 @@ fun main(args: Array<String>) {
 fun initZmq(publisherPort: Int): ZMQContext {
     val zmqContext = zmq.zmq_ctx_new() ?: throw IllegalStateException("Unable to connect to ZMQ")
 
-
     val publisher = zmq_socket(zmqContext, ZMQ_PUB) ?: throw IllegalStateException("Unable to open publisher")
     val rc = zmq_bind(publisher, "tcp://*:$publisherPort")
-    if (rc != 0) throw IllegalStateException("Unable to listen on port $publisherPort")
+    check(rc == 0) { "Unable to listen on port $publisherPort" }
 
     println("ZMQ bound to publisher: $publisherPort")
     return ZMQContext(zmqContext, publisher)

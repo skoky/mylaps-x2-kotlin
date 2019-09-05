@@ -20,13 +20,17 @@ repositories {
     jcenter()
 }
 
+apply {
+    plugin("kotlinx-serialization")
+}
+
 kotlin {
 
     sourceSets {
         commonMain {
             dependencies {
                 implementation kotlin('stdlib-common')
-                implementation 'org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:0.12.0'
+                implementation 'org.jetbrains.kotlinx:kotlinx-serialization-runtime-common:0.13.0'
             }
         }
         commonTest {
@@ -37,24 +41,32 @@ kotlin {
         }
         linuxX64Main {
             dependencies {
-                implementation 'org.jetbrains.kotlinx:kotlinx-serialization-runtime-native:0.12.0'
+                implementation 'org.jetbrains.kotlinx:kotlinx-serialization-runtime-native:0.13.0'
+            }
+        }
+
+        windowsX64 {
+            dependencies {
+                implementation 'org.jetbrains.kotlinx:kotlinx-serialization-runtime-native:0.13.0'
             }
         }
     }
 
     linuxX64() {
-        
+
         compilations.main.cinterops {
             mylaps {
                 includeDirs("sdk-master/include")
             }
-            zmq {}
+            zmq {
+                includeDirs("zmq")
+            }
         }
 
         binaries {
             executable {
                 baseName = 'x2'
-                linkerOpts = ["-L${projectDir.path}/sdk-master/lib/linux/x86-64".toString(), '-lmylapssdk', '-L/usr/lib/x86_64-linux-gnu', '-lzmq']
+                linkerOpts = ["-L${projectDir.path}/sdk-master/lib/linux/x86-64".toString(), "-L${projectDir.path}/zmq/linux".toString(), '-lmylapssdk', '-lzmq']
                 println("Executable path: ${outputFile.absolutePath}".toString())
             }
         }
@@ -65,12 +77,15 @@ kotlin {
             mylaps {
                 includeDirs("sdk-master/include")
             }
+            zmq {
+                includeDirs("zmq")
+            }
         }
 
         binaries {
             executable {
                 baseName = 'x2'
-                linkerOpts = ["-L${projectDir.path}/sdk-master/lib/windows/x64", '-lMylapsSDK']
+                linkerOpts = ["-L${projectDir.path}/sdk-master/lib/windows/x64".toString(), "-L${projectDir.path}/zmq/windows".toString(), '-lMylapsSDK', '-lzmq-v141-mt-4_3_2']
                 println("Executable path: ${outputFile.absolutePath}")
             }
         }

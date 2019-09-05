@@ -1,2 +1,2 @@
 package zmq
-headers=/usr/include/zmq.h
+headers=zmq.h
