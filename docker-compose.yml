@@ -7,7 +7,8 @@ compile-sdk-samples:
   command: sh -c "cmake . && make"
 
 app-build:
-  image: openjdk:8-slim
+  build: .
+  dockerfile: Dockerfile-compile
   working_dir: /opt/prj
   volumes:
     - ./root:/root
@@ -15,7 +16,7 @@ app-build:
   command: ./gradlew build
 
 x2:
-  image: debian:stretch-slim
+  build: .
   working_dir: /opt/
   environment:
     - LD_LIBRARY_PATH=/opt/libs

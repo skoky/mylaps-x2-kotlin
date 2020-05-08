@@ -1,5 +1,5 @@
-FROM debian:buster
+FROM openjdk:8-slim
 
 RUN apt-get update \
     && apt-get -y install autoconf cmake make dmidecode \
-    build-essential libc6 g++-multilib
+    build-essential libc6 g++-multilib libncurses5*
