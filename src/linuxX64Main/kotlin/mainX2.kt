@@ -22,9 +22,9 @@ fun initSdk(publisher: COpaquePointer): X2Context {
     mta_objectdata_subscribe(mtaHandle, mtaLoop)
     mta_objectdata_subscribe(mtaHandle, mtaTransponder)
 
-    mta_eventdata_subscribe(eventHandle, MTAEVENTDATA_.mtaLoopTrigger, 0, false)
-    mta_eventdata_subscribe(eventHandle, MTAEVENTDATA_.mtaPassingTrigger, 0, false)
-    mta_eventdata_subscribe(eventHandle, MTAEVENTDATA_.mtaPassing, 100, false)
+    mta_eventdata_subscribe(eventHandle, MTAEVENTDATA_.mtaLoopTrigger, 0u, false)
+    mta_eventdata_subscribe(eventHandle, MTAEVENTDATA_.mtaPassingTrigger, 0u, false)
+    mta_eventdata_subscribe(eventHandle, MTAEVENTDATA_.mtaPassing, 100u, false)
 
     return X2Context(sdkHandle, mtaHandle, eventHandle)
 }
@@ -82,7 +82,7 @@ fun passingsTrigger(x2: X2Context) {
     }
 
     mta_notify_passingtrigger(x2.eventHandle, passingsTriggerHandler)
-    mta_eventdata_subscribe(x2.eventHandle, MTAEVENTDATA_.mtaPassingTrigger, 0, false)
+    mta_eventdata_subscribe(x2.eventHandle, MTAEVENTDATA_.mtaPassingTrigger, 0u, false)
 }
 
 @ExperimentalUnsignedTypes
@@ -117,7 +117,7 @@ fun showPassings(x2: X2Context) {
         }
     }
     mta_notify_passing(x2.eventHandle, passingHandler)
-    mta_eventdata_subscribe(x2.eventHandle, MTAEVENTDATA_.mtaPassing, 100, false)
+    mta_eventdata_subscribe(x2.eventHandle, MTAEVENTDATA_.mtaPassing, 100u, false)
 }
 
 @ExperimentalUnsignedTypes

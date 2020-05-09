@@ -13,7 +13,7 @@ app-build:
   volumes:
     - ./root:/root
     - .:/opt/prj
-  command: ./gradlew build
+  command: gradle build
 
 x2:
   build: .
