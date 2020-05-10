@@ -16,10 +16,7 @@ const val ZMQ_PUBLISHER_PORT = 5556
 @kotlinx.serialization.UnstableDefault
 actual fun init(params: Params) {
 
-    signal(SIGKILL, staticCFunction(::localExit))
     signal(SIGINT, staticCFunction(::localExit))
-    signal(SIGQUIT, staticCFunction(::localExit))
-
 
     val zmqContext = initZmq(ZMQ_PUBLISHER_PORT)
 
