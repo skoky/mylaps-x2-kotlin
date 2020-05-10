@@ -1,4 +1,5 @@
 import kotlinx.cinterop.COpaquePointer
+import kotlinx.cinterop.NativePtr
 import kotlinx.cinterop.staticCFunction
 import mylaps.*
 import platform.posix.*
@@ -14,14 +15,11 @@ const val ZMQ_PUBLISHER_PORT = 5556
 
 @ExperimentalUnsignedTypes
 @kotlinx.serialization.UnstableDefault
-fun main(args: Array<String>) {
+actual fun init(params: Params) {
 
-//    signal(SIGKILL, staticCFunction(::localExit))
+    signal(SIGKILL, staticCFunction(::localExit))
     signal(SIGINT, staticCFunction(::localExit))
-//    signal(SIGQUIT, staticCFunction(::localExit))
-
-    val params = parseArgs(args) ?: exitProcess(1)
-
+    signal(SIGQUIT, staticCFunction(::localExit))
 
     val zmqContext = initZmq(ZMQ_PUBLISHER_PORT)
 
@@ -51,11 +49,8 @@ fun main(args: Array<String>) {
     disconnectAppliance(x2Context)
 }
 
-
-
 fun initZmq(publisherPort: Int): ZMQContext {
     val zmqContext = zmq.zmq_ctx_new() ?: throw IllegalStateException("Unable to connect to ZMQ")
-
 
     val publisher = zmq_socket(zmqContext, ZMQ_PUB) ?: throw IllegalStateException("Unable to open publisher")
     val rc = zmq_bind(publisher, "tcp://*:$publisherPort")
