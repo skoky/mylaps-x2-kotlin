@@ -13,7 +13,6 @@ data class ZMQContext(val zmqContext: COpaquePointer, val publisher: COpaquePoin
 const val ZMQ_PUBLISHER_PORT = 5556
 
 @ExperimentalUnsignedTypes
-@kotlinx.serialization.UnstableDefault
 actual fun init(params: Params) {
 
     signal(SIGINT, staticCFunction(::localExit))

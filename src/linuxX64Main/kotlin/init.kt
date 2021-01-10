@@ -1,5 +1,4 @@
 import kotlinx.cinterop.COpaquePointer
-import kotlinx.cinterop.NativePtr
 import kotlinx.cinterop.staticCFunction
 import mylaps.*
 import platform.posix.*
@@ -14,7 +13,6 @@ data class ZMQContext(val zmqContext: COpaquePointer, val publisher: COpaquePoin
 const val ZMQ_PUBLISHER_PORT = 5556
 
 @ExperimentalUnsignedTypes
-@kotlinx.serialization.UnstableDefault
 actual fun init(params: Params) {
 
     signal(SIGKILL, staticCFunction(::localExit))

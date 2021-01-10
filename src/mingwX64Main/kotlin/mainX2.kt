@@ -86,7 +86,6 @@ fun passingsTrigger(x2: X2Context) {
 }
 
 @ExperimentalUnsignedTypes
-@kotlinx.serialization.UnstableDefault
 fun showPassings(x2: X2Context) {
 
     val passingHandler: pfNotifyPassing = staticCFunction { handle: mta_eventdata_handle_t?, type: MDP_NOTIFY_TYPE, passings: CPointer<CPointerVar<passing_t>>?, count: uint32_t, context: COpaquePointer? ->
@@ -111,7 +110,7 @@ fun showPassings(x2: X2Context) {
                         transponder = transponderLabel,
                         utcTime = mdp_get_time_as_string(b, bs, passing.utctime, false, 4)?.toKString() ?: "",
                         localTime = mdp_get_time_as_string(b, bs, passing.timeofday, false, 4)?.toKString() ?: "")
-                val str = Json.stringify(PassingMsg.serializer(), p)
+                val str = Json.encodeToString(PassingMsg.serializer(), p)
                 sendJsonToZMQ(context, str)
             }
         }
