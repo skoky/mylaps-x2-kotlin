@@ -12,7 +12,7 @@ plugin.
 This sample connects to MyLaps X2 server, not decoders. A direct connection to decoder is not supported by MyLaps anymore. 
 Also the app does not support connection to legacy decoders like AMBrc Decoder, MYLAPS RC4 Decoder, AMBmx3 Decoder, 
 TranX3 Decoder, ChipX/ProChip Decoder, BIB Decoder, AMBrc, AMB20, AMB130, TranX-2 / TranX2, TranXPro, Activ or PegaSys. 
-If you need help with those decoders, see (ammconverter.eu)[ammconveter.eu].
+If you need help with those decoders, see www.ammconveter.eu.
 
 # Supported platforms
 
