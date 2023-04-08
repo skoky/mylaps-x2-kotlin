@@ -35,7 +35,7 @@ actual fun init(params: Params) {
     while (count < 100) {
         try {
 
-            mdp_sdk_messagequeue_process(x2Context.sdkHandle, true, _MDP_SECOND / 10)
+            mdp_sdk_messagequeue_process(x2Context.sdkHandle, true, 10)
             count++
         } catch (e: Exception) {
             e.message?.let { fail(it) }
